@@ -166,6 +166,40 @@ Contributions are welcome! Here's how you can help:
 
 Please ensure your code follows the existing style and passes the build.
 
+## 🚢 How to Release
+
+Creating a new release is a **two-step** process:
+
+### Step 1 — Bump the version
+
+Edit `app/build.gradle.kts` and update the `versionName`:
+
+```kotlin
+defaultConfig {
+    versionCode = 2          // increment for each release
+    versionName = "1.1.0"    // update to the new version
+}
+```
+
+### Step 2 — Commit with `#go`
+
+Commit your changes with a message that **must contain `#go`** anywhere in the commit text:
+
+```bash
+git add .
+git commit -m "fix: resolve input lag #go"
+git push origin main
+```
+
+The CI/CD pipeline will automatically:
+1. Detect `#go` in the commit message.
+2. Read the version from `app/build.gradle.kts`.
+3. Build the debug APK.
+4. Create a Git tag (`v1.1.0`).
+5. Publish a GitHub Release with the APK attached.
+
+> **Note:** No keystore signing is required — the debug APK is released as-is. This is fine for open-source projects. Users install it as a debug build.
+
 ## 📄 License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
