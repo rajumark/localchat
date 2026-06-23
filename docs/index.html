@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LocalChat — On-device LLM Chatbot powered by Gemini Nano via Android AICore. 100% private, no internet required.">
+  <title>LocalChat · On-Device AI Chatbot</title>
+  <style>
+    :root {
+      --primary: #007ACC;
+      --primary-dark: #005C99;
+      --bg: #0D1B2A;
+      --surface: #1B2838;
+      --text: #E0E6ED;
+      --text-muted: #8899A6;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .logo img { width: 36px; height: 36px; }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 100px 0 60px;
+    }
+
+    .hero-icon { width: 72px; margin-bottom: 24px; }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #99CCFF, #007ACC);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .badge.primary { background: var(--primary); color: white; border: none; }
+    .badge.green { background: #1a8a4a; color: white; border: none; }
+
+    .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+    .btn-outline {
+      border: 1.5px solid rgba(255,255,255,0.2);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Sections */
+    section { padding: 80px 0; }
+
+    section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    section > p.subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+      font-size: 1.05rem;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .feature-card .icon { font-size: 2rem; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .feature-card p { font-size: 0.9rem; color: var(--text-muted); }
+
+    /* Architecture */
+    .architecture {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 40px;
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+    }
+
+    .architecture pre {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+      text-align: left;
+      overflow-x: auto;
+    }
+
+    /* Tech Stack */
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .tech-table th,
+    .tech-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tech-table th {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    .tech-table td { font-size: 0.95rem; }
+
+    .tech-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a { color: var(--primary); text-decoration: none; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 2rem; }
+      .hero { padding: 60px 0 40px; }
+      section { padding: 60px 0; }
+      nav { flex-direction: column; gap: 16px; }
+      .architecture pre { font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <div class="logo">
+        <img src="icon.svg" alt="LocalChat Logo">
+        LocalChat
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#architecture">How It Works</a></li>
+        <li><a href="#tech-stack">Tech Stack</a></li>
+        <li><a href="https://github.com/yourusername/localchat">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <img src="icon.svg" alt="LocalChat" class="hero-icon">
+      <h1>LocalChat</h1>
+      <p>An on-device LLM chatbot powered by <strong>Gemini Nano</strong> via Android AICore. No API calls. No internet. 100% private.</p>
+      <div class="hero-badges">
+        <span class="badge primary">🤖 Gemini Nano</span>
+        <span class="badge green">🔒 On-Device</span>
+        <span class="badge">📱 Android 14+</span>
+        <span class="badge">🎨 Material 3</span>
+        <span class="badge">🆓 Free</span>
+      </div>
+      <div class="btn-group">
+        <a href="https://github.com/yourusername/localchat/releases" class="btn btn-primary">⬇ Download APK</a>
+        <a href="https://github.com/yourusername/localchat" class="btn btn-outline">View on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <section id="features">
+      <h2>Features</h2>
+      <p class="subtitle">Everything you need from a modern on-device AI assistant.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon">🔒</div>
+          <h3>100% Private</h3>
+          <p>All inference runs locally on your device. Zero data ever leaves your phone. No servers, no tracking.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">⚡</div>
+          <h3>No Internet Required</h3>
+          <p>Works completely offline once the model is downloaded. Perfect for travel, remote areas, or privacy.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🧠</div>
+          <h3>Gemini Nano</h3>
+          <p>Powered by Google's on-device foundation model via Android AICore. Runs on NPU or CPU.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎨</div>
+          <h3>Material Design 3</h3>
+          <p>Modern UI with dynamic color (Material You). Adapts to your system theme — light or dark.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">⬇️</div>
+          <h3>Auto-Download</h3>
+          <p>Checks model availability on launch and downloads Gemini Nano with a single tap.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🆓</div>
+          <h3>Free & Open Source</h3>
+          <p>No subscriptions, no API costs, no hidden fees. MIT licensed — use it any way you like.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2>How It Works</h2>
+      <p class="subtitle">From your message to Gemini Nano — entirely on-device.</p>
+      <div class="architecture">
+        <pre>
+┌─────────────────────────────────────────────────────┐
+│                  Your Android Device                  │
+│                                                       │
+│  ┌──────────────┐     ┌───────────────────────────┐  │
+│  │  LocalChat    │────▶│  ML Kit GenAI Prompt API  │  │
+│  │  (Compose UI) │◀────│  (com.google.mlkit)       │  │
+│  └──────────────┘     └───────────┬───────────────┘  │
+│                                   │                   │
+│                          ┌────────▼───────────────┐  │
+│                          │  Android AICore         │  │
+│                          │  (com.google.aicore)    │  │
+│                          └────────┬───────────────┘  │
+│                                   │                   │
+│                          ┌────────▼───────────────┐  │
+│                          │  Gemini Nano            │  │
+│                          │  (On-Device NPU/CPU)    │  │
+│                          └────────────────────────┘  │
+│                                                       │
+│  ───── No Internet · No API Calls · No Cloud ─────   │
+└─────────────────────────────────────────────────────┘
+        </pre>
+      </div>
+    </section>
+
+    <section id="tech-stack">
+      <h2>Tech Stack</h2>
+      <p class="subtitle">Built with modern Android technologies.</p>
+      <table class="tech-table">
+        <thead>
+          <tr><th>Layer</th><th>Technology</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Language</td><td>Kotlin 2.3.21</td></tr>
+          <tr><td>UI Framework</td><td>Jetpack Compose + Material Design 3</td></tr>
+          <tr><td>Theming</td><td>Dynamic Color (Material You)</td></tr>
+          <tr><td>Architecture</td><td>Single Activity + ViewModel + StateFlow</td></tr>
+          <tr><td>AI Inference</td><td>ML Kit GenAI Prompt API 1.0.0-beta2</td></tr>
+          <tr><td>On-Device Model</td><td>Gemini Nano via Android AICore</td></tr>
+          <tr><td>Min SDK</td><td>API 26 (Android 8.0)</td></tr>
+          <tr><td>Target SDK</td><td>API 36 (Android 15)</td></tr>
+          <tr><td>Build System</td><td>Gradle 8.12 + AGP 8.7.3</td></tr>
+          <tr><td>CI/CD</td><td>GitHub Actions</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>Built with <a href="https://kotlinlang.org">Kotlin</a> &amp; <a href="https://developer.android.com/jetpack/compose">Jetpack Compose</a></p>
+      <p style="margin-top:8px"><a href="https://github.com/yourusername/localchat">GitHub</a> · MIT License</p>
+    </div>
+  </footer>
+</body>
+</html>
